@@ -80,7 +80,7 @@ DECLARE_FASTCALL_DETOUR(HM5Hooks, void, ZAchievementManagerSimple_OnEventSent, Z
 			if (s_Spotters.size() > 0)
 				s_Spotters += ",";
 
-			s_Spotters += s_Spotter;
+			//s_Spotters += s_Spotter;
 		}
 
 		g_Module->Pipe()->SendPipeMessage("SU", "Spotted:" + s_Spotters);
