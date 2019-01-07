@@ -162,3 +162,6 @@ External/lib/Pipeman.lib
 External/lib/Pipeman64.lib
 /.vs/*
 /_build/*
+
+# Rider
+.idea/*
