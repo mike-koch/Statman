@@ -95,7 +95,7 @@ DECLARE_FASTCALL_DETOUR(HM5Hooks, void, ZAchievementManagerSimple_OnEventSent, Z
 			if (s_Witnesses.size() > 0)
 				s_Witnesses += ",";
 
-			s_Witnesses += s_Witness;
+			//s_Witnesses += s_Witness;
 		}
 
 		g_Module->Pipe()->SendPipeMessage("SU", "Witnesses:" + s_Witnesses);
