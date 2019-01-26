@@ -116,7 +116,7 @@ DECLARE_FASTCALL_DETOUR(HM5Hooks, void, ZAchievementManagerSimple_OnEventSent, Z
 		}
 	}
 
-	Log("ZAchievementManagerSimple Event! %s\n", s_JsonEvent.dump(4).c_str());
+	//Log("ZAchievementManagerSimple Event! %s\n", s_JsonEvent.dump(4).c_str());
 
 	return o_ZAchievementManagerSimple_OnEventSent(th, eventIndex, event);
 }
