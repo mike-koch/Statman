@@ -109,14 +109,13 @@ DECLARE_FASTCALL_DETOUR(HM5Hooks, void, ZAchievementManagerSimple_OnEventSent, Z
 		{
 			g_Module->Pipe()->SendPipeMessage("SU", "CaughtOnCamera");
 		}
-		else if (s_Event != "CameraDestroyed")
+		else if (s_Event == "destroyed")
 		{
-			// TODO Replace conditional with actual event instead of "not camera destroyed"
 			g_Module->Pipe()->SendPipeMessage("SU", "RecordingsDestroyed");
 		}
 	}
 
-	//Log("ZAchievementManagerSimple Event! %s\n", s_JsonEvent.dump(4).c_str());
+	Log("ZAchievementManagerSimple Event! %s\n", s_JsonEvent.dump(4).c_str());
 
 	return o_ZAchievementManagerSimple_OnEventSent(th, eventIndex, event);
 }
