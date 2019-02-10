@@ -28,7 +28,7 @@
     <ProjectGuid>{0C56D79B-3F95-4EDF-BEE1-1C74E259B81E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Pipeman</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

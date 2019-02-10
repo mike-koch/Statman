@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27703.2000
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statman", "Statman\Statman.csproj", "{4591C6E1-EB82-4541-8172-E13B8B42714D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -50,7 +50,6 @@ Global
 		{4591C6E1-EB82-4541-8172-E13B8B42714D}.Release|x64.Build.0 = Release|x64
 		{4591C6E1-EB82-4541-8172-E13B8B42714D}.Release|x86.ActiveCfg = Release|x64
 		{8883C6D6-7617-4348-9EF9-FEB10EEC973F}.Debug|x64.ActiveCfg = Debug|Win32
-		{8883C6D6-7617-4348-9EF9-FEB10EEC973F}.Debug|x64.Build.0 = Debug|Win32
 		{8883C6D6-7617-4348-9EF9-FEB10EEC973F}.Debug|x86.ActiveCfg = Debug|Win32
 		{8883C6D6-7617-4348-9EF9-FEB10EEC973F}.Debug|x86.Build.0 = Debug|Win32
 		{8883C6D6-7617-4348-9EF9-FEB10EEC973F}.Release|x64.ActiveCfg = Release|Win32
