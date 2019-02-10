@@ -34,6 +34,7 @@ namespace Statman.Engines.HM5
             { "assembly:/_pro/scenes/missions/colorado_2/scene_rabies.entity", new Tuple<string, string>("Patient Zero", "The Vector") },
             { "assembly:/_pro/scenes/missions/hokkaido/_scene_flu.entity", new Tuple<string, string>("Patient Zero", "Patient Zero") },
             { "assembly:/_pro/scenes/missions/hawk/scene_hawk.entity", new Tuple<string, string>("Sniper Assassin", "The Last Yardbird") },
+            { "assembly:/_pro/scenes/missions/hokkaido/scene_mamushi.entity", new Tuple<string, string>("Hitman 2", "Hokkaido Snow Festival") },
         };
 
         private readonly HM5Engine m_Engine;
@@ -41,6 +42,7 @@ namespace Statman.Engines.HM5
         private long m_EntitySceneManagerAddr;
 
         private readonly HashSet<string> m_Spotters;
+        private readonly HashSet<string> m_Witnesses;
         private bool m_NonTargetKill;
         private bool m_BodyFound;
         private bool m_NoticedKill;
@@ -54,6 +56,7 @@ namespace Statman.Engines.HM5
         {
             m_Engine = p_Engine;
             m_Spotters = new HashSet<string>();
+            m_Witnesses = new HashSet<string>();
             m_KillCooldownStopwatch = new Stopwatch();
         }
 
@@ -72,6 +75,7 @@ namespace Statman.Engines.HM5
 
             m_Engine.Control.SetRatingPerfect(
                 m_Spotters.Count == 0 &&
+                m_Witnesses.Count == 0 &&
                 !m_BodyFound &&
                 !m_NonTargetKill &&
                 !m_NoticedKill &&
@@ -109,6 +113,7 @@ namespace Statman.Engines.HM5
         public void OnContractStart()
         {
             m_Spotters.Clear();
+            m_Witnesses.Clear();
             m_BodyFound = false;
             m_NonTargetKill = false;
             m_NoticedKill = false;
@@ -120,10 +125,11 @@ namespace Statman.Engines.HM5
 
         public void UpdateRating()
         {
-            m_Engine.Control.SetSpotted(m_Spotters.Count > 0);
+            m_Engine.Control.SetSpotted(m_Spotters.Count > 0 || m_Witnesses.Count > 0);
             m_Engine.Control.SetBodyFound(m_BodyFound);
             m_Engine.Control.SetNonTargetKill(m_NonTargetKill);
             m_Engine.Control.SetNoticedKill(m_NoticedKill);
+            m_Engine.Control.SetCaughtOnCamera(m_CaughtOnCamera);
 
             if (m_KillCooldownStopwatch.ElapsedMilliseconds > 0)
             {
@@ -132,8 +138,6 @@ namespace Statman.Engines.HM5
                 if (m_KillCooldownStopwatch.ElapsedMilliseconds > KillCooldown)
                     m_KillCooldownStopwatch.Stop();
             }
-
-            // TODO: Caught on camera
         }
 
         public void OnSpotted(IEnumerable<string> p_Spotters)
@@ -144,16 +148,42 @@ namespace Statman.Engines.HM5
             UpdateRating();
         }
 
+        public void OnWitnesses(IEnumerable<string> p_Witnesses)
+        {
+            foreach (var s_Witness in p_Witnesses)
+                m_Witnesses.Add(s_Witness);
+
+            UpdateRating();
+        }
+        
+        public void OnCaughtOnCamera()
+        {
+            m_CaughtOnCamera = true;
+
+            UpdateRating();
+        }
+
+        public void OnRecordingsDestroyed()
+        {
+            m_CaughtOnCamera = false;
+
+            UpdateRating();
+        }
+
         public void OnKill(string p_NPCID, bool p_Accident, bool p_Target)
         {
             if (!p_Accident)
                 m_KillCooldownStopwatch.Restart();
 
-            if (p_Target && m_Spotters.Contains(p_NPCID))
+            if (p_Target)
+            {
                 m_Spotters.Remove(p_NPCID);
-
-            if (!p_Target)
+                m_Witnesses.Remove(p_NPCID);
+            }
+            else
+            {
                 m_NonTargetKill = true;
+            }
 
             UpdateRating();
         }
