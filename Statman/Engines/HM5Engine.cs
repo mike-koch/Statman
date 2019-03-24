@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using DiscordRPC;
+using DiscordRPC.Logging;
 using Statman.Engines.HM5;
 using Statman.Engines.HM5.Controls;
 using Statman.Engines.HM5.Windows;
@@ -30,11 +32,13 @@ namespace Statman.Engines
         private Injector m_Injector;
 
         private readonly List<Control> m_MenuItems;
+        private DiscordRpcClient m_DiscordRpcClient;
 
         public HM5Engine()
         {
             m_MenuItems = new List<Control>();
             Active = false;
+            m_DiscordRpcClient = null;
         }
 
         public void Dispose()
@@ -51,6 +55,12 @@ namespace Statman.Engines
             {
                 m_Injector.Dispose();
                 m_Injector = null;
+            }
+
+            if (m_DiscordRpcClient != null)
+            {
+                m_DiscordRpcClient.Dispose();
+                m_DiscordRpcClient = null;
             }
         }
 
@@ -136,6 +146,12 @@ namespace Statman.Engines
                     m_Injector = null;
                 }
 
+                if (m_DiscordRpcClient != null)
+                {
+                    m_DiscordRpcClient.Dispose();
+                    m_DiscordRpcClient = null;
+                }
+
                 var s_Processes = Process.GetProcessesByName("HITMAN2");
 
                 if (s_Processes.Length == 0)
@@ -157,10 +173,20 @@ namespace Statman.Engines
                         m_Injector = new Injector(m_GameProcess, true);
                         m_Injector.InjectLibrary("HM5.dll");
 
+                        // Create the Discord RPC client
+                        m_DiscordRpcClient = new DiscordRpcClient("543958719382290472")
+                        {
+                            Logger = new ConsoleLogger
+                            {
+                                Level = LogLevel.Info
+                            }
+                        };
+                        m_DiscordRpcClient.Initialize();
+
                         // Setup our main control.
                         MainApp.MainWindow.Dispatcher.Invoke(() =>
                         {
-                            Control = new MainControl();
+                            Control = new MainControl(m_DiscordRpcClient);
                         });
 
                         // Setup our engine-specific classes.
