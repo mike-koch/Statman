@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Statman.Engines.HM5.CustomTracking;
+using DiscordRPC;
+using DiscordRPC.Logging;
 
 namespace Statman.Engines.HM5.Controls
 {
@@ -12,19 +14,31 @@ namespace Statman.Engines.HM5.Controls
         private long m_LastCooldownMs;
         private bool m_LastRatingStatus = true;
         private HM5Engine m_Engine;
+        private readonly DiscordRpcClient m_DiscordRpcClient;
+        private readonly DateTime m_StartDateTime;
+        private string m_LastGameMode;
+        private string m_LastLevel;
+        
 
-        public MainControl(HM5Engine p_Engine)
+        public MainControl(HM5Engine p_Engine, DiscordRpcClient p_DiscordRpcClient)
         {
             m_Engine = p_Engine;
             InitializeComponent();
+
+            m_DiscordRpcClient = p_DiscordRpcClient;
+            m_StartDateTime = DateTime.UtcNow;
         }
 
         public void SetCurrentLevel(string p_GameMode, string p_Level)
         {
+            m_LastGameMode = p_GameMode;
+            m_LastLevel = p_Level;
+
             Dispatcher.Invoke(() =>
             {
                 GameModeLabel.Content = p_GameMode.Replace("_", "__").ToUpperInvariant();
                 CurrentLevelLabel.Content = p_Level.Replace("_", "__");
+                UpdateDiscordRichPresence();
             });
         }
         
@@ -259,6 +273,34 @@ namespace Statman.Engines.HM5.Controls
                 Advanced.RatingLabel.Content = "Silent Assassin";
                 Advanced.RatingLabel.Foreground = (Brush) FindResource("LabelBrush");
             });
+        }
+
+        public void UpdateDiscordRichPresence()
+        {
+            var presence = new RichPresence
+            {
+                Assets = new Assets
+                {
+                    LargeImageKey = "logo"
+                }
+            };
+            if (m_LastGameMode == "Hitman" && m_LastLevel == "No Level")
+            {
+                presence.Details = "In Menus";
+            }
+            else
+            {
+                presence.Assets.LargeImageKey = m_LastLevel.Replace(" ", "-").ToLowerInvariant();
+                presence.Details = m_LastGameMode;
+                presence.State = m_LastLevel;
+                presence.Timestamps = new Timestamps
+                {
+                    Start = m_StartDateTime
+                };
+            }
+
+            m_DiscordRpcClient.SetPresence(presence);
+            m_DiscordRpcClient.Invoke();
         }
     }
 }
