@@ -137,6 +137,28 @@ DECLARE_FASTCALL_DETOUR(HM5Hooks, void, ZContractsManager_OnEventSent, ZContract
 	ZString s_EventStr;
 	event->ToString(event, &s_EventStr);
 
+	/*
+	ZChallengesManager Event! {
+		"Name": "ChallengeCompleted",
+		"Value": {
+			"ChallengeDescription": "UI_CHALLENGES_OCTOPUS_EXP_ACT_DEAD_DESC",
+			"ChallengeDrops": [
+				"STARTING_LOCATION_SAPIENZA_CHURCHMORGUE"
+			],
+			"ChallengeId": "45e8c48f-3fe9-47cf-8488-9965c76c058f",
+			"ChallengeImageUrl": "images/challenges/sapienza/octopus_exp_act_dead.jpg",
+			"ChallengeName": "UI_CHALLENGES_OCTOPUS_EXP_ACT_DEAD_NAME",
+			"ChallengeTags": [
+				"story",
+				"medium",
+				"discovery"
+			],
+			"IsRepeated": false,
+			"XPGain": 2000.0
+		}
+	}
+	*/
+
 	// TODO: Properly do this by reverse engineering ZDynamicObject whenever I'm feeling brave.
 	// This is a super lazy hack but it should work fine for now.
 	auto s_JsonEvent = json::parse(s_EventStr.c_str());
